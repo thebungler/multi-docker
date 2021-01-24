@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t thebungler/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true thebungler/react-test npm test #-- --coverage
+
+after_success:
+  - docker build -t thebungler/multi-client ./client
+  - docker build -t thebungler/multi-nginx ./nginx
+  - docker build -t thebungler/multi-server ./server
+  - docker build -t thebungler/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to docker hub
+  - docker push thebungler/multi-client
+  - docker push thebungler/multi-nginx
+  - docker push thebungler/multi-server
+  - docker push thebungler/multi-worker
