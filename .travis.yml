@@ -14,7 +14,7 @@ after_success:
   - docker build -t thebungler/multi-server ./server
   - docker build -t thebungler/multi-worker ./worker
   # Log in to the docker CLI
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_ID" --password-stdin
   # Push images to docker hub
   - docker push thebungler/multi-client
   - docker push thebungler/multi-nginx
